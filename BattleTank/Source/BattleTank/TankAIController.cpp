@@ -5,9 +5,15 @@
 void ATankAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	auto ControlledTank = GetControlledTank();
+	if (ControlledTank)
+	{
+		ControlledTank->AimAt(GetPlayerTank()->GetTransform().GetLocation());
+	}
+	
 }
 
-ATank * ATankAIController::getControlledTank() const
+ATank * ATankAIController::GetControlledTank() const
 {
 
 	return Cast<ATank>(this->GetPawn());
@@ -16,7 +22,7 @@ ATank * ATankAIController::getControlledTank() const
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	auto controlledTank = getControlledTank();
+	auto controlledTank = GetControlledTank();
 	if (controlledTank)
 	{
 		UE_LOG(LogTemp, Warning,TEXT("Controlled tank: %s"),*controlledTank->GetName());
@@ -25,14 +31,14 @@ void ATankAIController::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Controlled tank not set"));
 	}
-	auto playerTank = getPlayerTank();
+	auto playerTank = GetPlayerTank();
 	if (playerTank)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player tank: %s"), *playerTank->GetName());
 	}
 }
 
-ATank * ATankAIController::getPlayerTank() const
+ATank * ATankAIController::GetPlayerTank() const
 {
 	return Cast<ATank>(this->GetWorld()->GetFirstPlayerController()->GetPawn());
 }

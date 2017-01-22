@@ -17,8 +17,8 @@ private:
 	void BeginPlay()override;
 	virtual void Tick(float DeltaSeconds) override;
 
-		ATank*getControlledTank()const;
+		ATank*GetControlledTank()const;
 		
-		ATank*getPlayerTank()const;
+		ATank*GetPlayerTank()const;
 	
 };
