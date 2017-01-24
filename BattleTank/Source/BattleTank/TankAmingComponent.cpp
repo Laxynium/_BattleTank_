@@ -2,7 +2,7 @@
 
 #include "BattleTank.h"
 #include "TankAmingComponent.h"
-
+#include "TankBarrel.h"
 
 // Sets default values for this component's properties
 UTankAmingComponent::UTankAmingComponent()
@@ -14,14 +14,33 @@ UTankAmingComponent::UTankAmingComponent()
 	// ...
 }
 
-void UTankAmingComponent::AimAt(FVector WordSpaceAim, float LaunchSpeed)
+void UTankAmingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Firing at %f"),LaunchSpeed);
+	if (!Barrel) { return; }
+	FVector OutLaunchVelocity;
+	FVector StartLocation= Barrel->GetSocketLocation(FName("Projectile"));
+	if (UGameplayStatics::SuggestProjectileVelocity(this, OutLaunchVelocity, StartLocation, HitLocation, LaunchSpeed,false,0,0,ESuggestProjVelocityTraceOption::DoNotTrace))
+	{
+		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		moveBarrelToward(AimDirection);
+	}
+	//MoveBarrel
+	//GetBarrelRotator
+	//SetBarrel Rotator correctly with OutLaunchVelocity
+}
+
+void UTankAmingComponent::moveBarrelToward(FVector AimDirection)
+{
+	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
+	auto AimAsRotator = AimDirection.Rotation();
+	auto DeltaRotator = BarrelRotator - AimAsRotator;
+	Barrel->Elevate(5);
+
 }
 
 
 
-void UTankAmingComponent::SetBarrelReference(UStaticMeshComponent * BarrelToSet)
+void UTankAmingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
 	Barrel = BarrelToSet;
 }

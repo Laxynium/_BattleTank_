@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BattleTank.h"
 #include "TankPlayerController.h"
+#include "Tank.h"
 #define OUT
 ATank* ATankPlayerController::GetControlledTank()const
 {
@@ -56,8 +57,6 @@ bool ATankPlayerController::GetLookVectorHitLocation(const FVector& LookDirectio
 	if (this->GetWorld()->LineTraceSingleByChannel(hitResult, StartLocation, EndLocation,ECC_Visibility))
 	{
 		HitLocation=hitResult.Location;
-		//HitLocation = hitResult.GetActor()->GetTransform().GetLocation();
-		UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *hitResult.GetActor()->GetName());
 		return true;
 	}
 	

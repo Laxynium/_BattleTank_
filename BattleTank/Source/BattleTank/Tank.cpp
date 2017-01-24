@@ -2,9 +2,8 @@
 
 #include "BattleTank.h"
 #include "Tank.h"
-
-
-void ATank::SetBarrelReference(UStaticMeshComponent * BarrelToSet)
+#include "TankAmingComponent.h"
+void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
 	TankAmingComponent->SetBarrelReference(BarrelToSet);
 }
@@ -15,7 +14,7 @@ ATank::ATank()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	TankAmingComponent = CreateDefaultSubobject<UTankAmingComponent>(FName("Aming Component"));
-	
+	//SetBarrelReference
 }
 
 

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "BattleTank.h"
 #include "TankAIController.h"
+#include "Tank.h"
 
 void ATankAIController::Tick(float DeltaSeconds)
 {
@@ -10,7 +11,6 @@ void ATankAIController::Tick(float DeltaSeconds)
 	{
 		ControlledTank->AimAt(GetPlayerTank()->GetTransform().GetLocation());
 	}
-	
 }
 
 ATank * ATankAIController::GetControlledTank() const
