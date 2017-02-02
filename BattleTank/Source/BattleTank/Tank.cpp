@@ -3,6 +3,10 @@
 #include "BattleTank.h"
 #include "Tank.h"
 #include "TankAmingComponent.h"
+void ATank::Fire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("I am firing"));
+}
 void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
 	TankAmingComponent->SetBarrelReference(BarrelToSet);
