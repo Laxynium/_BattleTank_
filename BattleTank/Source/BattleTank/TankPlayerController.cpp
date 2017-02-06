@@ -3,6 +3,24 @@
 #include "TankPlayerController.h"
 #include "Tank.h"
 #define OUT
+
+
+void ATankPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	auto controlledTank = GetControlledTank();
+	if (controlledTank)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player pawn tank: %s"), *controlledTank->GetName());
+	}
+}
+void ATankPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	AimTowardsCrosshair();
+}
+
 ATank* ATankPlayerController::GetControlledTank()const
 {
 	return Cast<ATank>(GetPawn());
@@ -38,17 +56,6 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector&HitLocation) const
 	}
 	return false;
 }
-
-bool ATankPlayerController::GetLookDirection(const FVector2D &ScreenLocation,FVector& LookDirection) const
-{
-	FVector CamerWorldLocation/*To be discarded*/;
-	if (DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CamerWorldLocation, LookDirection))
-	{
-		return true;
-	}
-	return false;
-}
-
 bool ATankPlayerController::GetLookVectorHitLocation(const FVector& LookDirection, FVector& HitLocation)const
 {
 	FHitResult hitResult;
@@ -63,21 +70,10 @@ bool ATankPlayerController::GetLookVectorHitLocation(const FVector& LookDirectio
 	HitLocation = { 0,0,0 };
 	return false;
 }
-
-void ATankPlayerController::Tick(float DeltaSeconds)
+bool ATankPlayerController::GetLookDirection(const FVector2D &ScreenLocation, FVector& LookDirection) const
 {
-	Super::Tick(DeltaSeconds);
-	AimTowardsCrosshair();
+	FVector CamerWorldLocation/*To be discarded*/;
+	return DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CamerWorldLocation, LookDirection);
 }
-
-void ATankPlayerController::BeginPlay()
-{
-	auto controlledTank=GetControlledTank();
-	if (controlledTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player pawn tank: %s"),*controlledTank->GetName());
-	}
-}
-
 
 

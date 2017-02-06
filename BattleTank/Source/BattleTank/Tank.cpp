@@ -7,12 +7,18 @@
 #include "Projectile.h"
 void ATank::Fire()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("I am firing"));
-	if (!Barrel)return;
-	auto Location = Barrel->GetSocketLocation("Projectile");
-	auto Rotation = Barrel->GetSocketRotation("Projectile");
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, FRotator());
-	Projectile->LaunchProjectitle(LaunchSpeed);
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+
+	if (Barrel&&isReloaded)
+	{
+		auto Location = Barrel->GetSocketLocation("Projectile");
+		auto Rotation = Barrel->GetSocketRotation("Projectile");
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation);
+		Projectile->LaunchProjectitle(LaunchSpeed);
+
+		LastFireTime = FPlatformTime::Seconds();
+	}
+	
 }
 void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
