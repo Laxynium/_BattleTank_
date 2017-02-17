@@ -12,4 +12,5 @@ class BATTLETANK_API ATankAIController : public AAIController
 	GENERATED_BODY()
 private:
 	virtual void Tick(float DeltaSeconds) override;
+	float AcceptanceRadius = 3000;
 };
