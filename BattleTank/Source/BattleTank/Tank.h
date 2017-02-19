@@ -3,7 +3,7 @@
 #pragma once
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
-class UTankAmingComponent;
+class UTankAimingComponent;
 class UTankMovementComponent;
 class UTankTurret;
 class AProjectile;
@@ -22,14 +22,14 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	UTankAmingComponent*TankAmingComponent = nullptr;
+	UTankAimingComponent*TankAmingComponent = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent*TankMovementComponent = nullptr;
 private:
 	// Sets default values for this pawn's properties
 	ATank();
-
+	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		TSubclassOf<AProjectile> ProjectileBlueprint;
 

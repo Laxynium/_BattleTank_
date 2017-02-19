@@ -2,18 +2,18 @@
 #include "BattleTank.h"
 #include "TankPlayerController.h"
 #include "Tank.h"
+#include "TankAmingComponent.h"
 #define OUT
 
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto controlledTank = GetControlledTank();
-	if (controlledTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player pawn tank: %s"), *controlledTank->GetName());
-	}
+	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	if (AimingComponent)
+		FoundAimingComponent(AimingComponent);
+	else
+		UE_LOG(LogTemp, Warning, TEXT("Player controller can't find aiming component at Begin Play"));
 }
 void ATankPlayerController::Tick(float DeltaSeconds)
 {
@@ -51,7 +51,6 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector&HitLocation) const
 		if (GetLookVectorHitLocation(LookDirection, HitLocation))
 		{
 			return true;
-			//UE_LOG(LogTemp, Warning, TEXT("Look location: %s"), *HitLocation.ToString());
 		}
 	}
 	return false;
