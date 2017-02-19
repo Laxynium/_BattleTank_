@@ -65,15 +65,6 @@ void UTankAmingComponent::moveBarrelToward(FVector AimDirection)
 	}
 
 }
-
-void UTankAmingComponent::rotateTurret(FVector AimDirection)
-{
-	auto TurretRotator = Turret->GetForwardVector().Rotation();
-	auto AimAsRotator = AimDirection.Rotation();
-	auto DeltaRotator = AimAsRotator - TurretRotator;
-	Turret->Rotate(DeltaRotator.Yaw);
-}
-
 // Called when the game starts
 void UTankAmingComponent::BeginPlay()
 {
