@@ -14,15 +14,9 @@ UTankAmingComponent::UTankAmingComponent()
 
 }
 
-void UTankAmingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
+void UTankAmingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet)
 {
-	if (Barrel)return;
 	Barrel = BarrelToSet;
-}
-
-void UTankAmingComponent::SetTurretReference(UTankTurret * TurretToSet)
-{
-	if (Turret)return;
 	Turret = TurretToSet;
 }
 
@@ -46,6 +40,8 @@ void UTankAmingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 
 void UTankAmingComponent::moveBarrelToward(FVector AimDirection)
 {
+	if (!Barrel) { return; }
+	if (!Turret) { return; }
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = (AimAsRotator - BarrelRotator);
@@ -65,21 +61,3 @@ void UTankAmingComponent::moveBarrelToward(FVector AimDirection)
 	}
 
 }
-// Called when the game starts
-void UTankAmingComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UTankAmingComponent::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
-{
-	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-
-	// ...
-}
-

@@ -6,11 +6,19 @@
 #include "TankBarrel.h"
 #include "Projectile.h"
 #include "TankMovementComponent.h"
+
+// Sets default values
+ATank::ATank()
+{
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = false;
+}
+
 void ATank::Fire()
 {
 	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 
-	if (Barrel&&isReloaded)
+	if (isReloaded)
 	{
 		auto Location = Barrel->GetSocketLocation("Projectile");
 		auto Rotation = Barrel->GetSocketRotation("Projectile");
@@ -21,44 +29,8 @@ void ATank::Fire()
 	}
 	
 }
-void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
-{
-	TankAmingComponent->SetBarrelReference(BarrelToSet);
-	Barrel = BarrelToSet;
-}
-
-void ATank::SetTurretReference(UTankTurret * TurretToSet)
-{
-	TankAmingComponent->SetTurretReference(TurretToSet);
-}
-
-// Sets default values
-ATank::ATank()
-{
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	TankAmingComponent = CreateDefaultSubobject<UTankAmingComponent>(FName("Aming Component"));
-	//SetBarrelReference
-}
-
-
 void ATank::AimAt(FVector HitLocation)
 {
 	TankAmingComponent->AimAt(HitLocation, LaunchSpeed);
 	//Spawn a projectile at socket location on the barrel
 }
-
-// Called when the game starts or when spawned
-void ATank::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called to bind functionality to input
-void ATank::SetupPlayerInputComponent(class UInputComponent* InputComponent)
-{
-	Super::SetupPlayerInputComponent(InputComponent);
-
-}
-
