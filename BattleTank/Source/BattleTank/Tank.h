@@ -3,11 +3,9 @@
 #pragma once
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
-class UTankAimingComponent;
 class UTankTurret;
 class AProjectile;
 class UTankBarrel;
-
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -15,13 +13,9 @@ class BATTLETANK_API ATank : public APawn
 	GENERATED_BODY()
 
 public:
-	void AimAt(FVector HitLocation);
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Fire();
 
-protected:
-	UPROPERTY(BlueprintReadOnly)
-	UTankAimingComponent*TankAmingComponent = nullptr;
 private:
 	// Sets default values for this pawn's properties
 	ATank();
