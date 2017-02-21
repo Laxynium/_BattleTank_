@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleTank.h"
-#include "TankAmingComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "TankAmingComponent.h"
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
