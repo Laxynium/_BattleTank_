@@ -3,13 +3,15 @@
 #include "BattleTank.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 #include "TankAmingComponent.h"
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	bWantsBeginPlay = true;
+
+	bWantsBeginPlay = false;
 	PrimaryComponentTick.bCanEverTick = false;
 
 }
@@ -34,6 +36,22 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		moveBarrelToward(AimDirection);
+	}
+}
+
+void UTankAimingComponent::Fire()
+{
+	if (!ensure(Barrel)||!ensure(ProjectileBlueprint))return;
+
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+
+	if (isReloaded)
+	{
+		auto Location = Barrel->GetSocketLocation("Projectile");
+		auto Rotation = Barrel->GetSocketRotation("Projectile");
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation);
+		Projectile->LaunchProjectitle(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
 	}
 }
 
