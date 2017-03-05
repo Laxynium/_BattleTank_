@@ -36,7 +36,7 @@ public:
 	EFiringStatus GetFiringState()const;
 
 	UFUNCTION(BlueprintCallable, Category = "Firing")
-	int GetCountOfAmmo()const;
+	int32 GetCountOfAmmo()const;
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringStatus FiringStatus = EFiringStatus::Reloading;
@@ -49,10 +49,6 @@ private:
 	void moveBarrelToward(FVector AimDirection);
 	bool IsBarrelMoving();
 
-	double LastFireTime = 0;
-
-	UTankBarrel* Barrel = nullptr;
-	UTankTurret* Turret = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		TSubclassOf<AProjectile> ProjectileBlueprint;
@@ -62,7 +58,16 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 		float ReloadTimeInSeconds = 3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+		int32 countOfAmmo = 3;
+
+
+	double LastFireTime = 0;
+
+	UTankBarrel* Barrel = nullptr;
+	UTankTurret* Turret = nullptr;
+
 	FVector AimDirection;
 
-	int countOfAmmo = 3;
 };
