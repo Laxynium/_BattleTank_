@@ -11,9 +11,34 @@ UTankAimingComponent::UTankAimingComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 
-	bWantsBeginPlay = false;
-	PrimaryComponentTick.bCanEverTick = false;
+	bWantsBeginPlay = true;
+	PrimaryComponentTick.bCanEverTick = true;
 
+}
+
+void UTankAimingComponent::BeginPlay()
+{
+	LastFireTime = FPlatformTime::Seconds();
+}
+
+void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+{
+	if (countOfAmmo <= 0)
+	{
+		FiringStatus = EFiringStatus::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	{
+		FiringStatus = EFiringStatus::Reloading;
+	}
+	else if (IsBarrelMoving())
+	{
+		FiringStatus = EFiringStatus::Aiming;
+	}
+	else
+	{
+		FiringStatus = EFiringStatus::Locked;
+	}
 }
 
 void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet)
@@ -34,25 +59,34 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	);
 	if (bHaveAimSolution)
 	{
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection = OutLaunchVelocity.GetSafeNormal();
 		moveBarrelToward(AimDirection);
 	}
 }
 
 void UTankAimingComponent::Fire()
 {
-	if (!ensure(Barrel)||!ensure(ProjectileBlueprint))return;
-
-	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-
-	if (isReloaded)
+	if (FiringStatus!=EFiringStatus::Reloading && FiringStatus != EFiringStatus::OutOfAmmo)
 	{
+		if (!ensure(Barrel) || !ensure(ProjectileBlueprint))return;
 		auto Location = Barrel->GetSocketLocation("Projectile");
 		auto Rotation = Barrel->GetSocketRotation("Projectile");
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Location, Rotation);
 		Projectile->LaunchProjectitle(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
+
+		--countOfAmmo;
 	}
+}
+
+EFiringStatus UTankAimingComponent::GetFiringState() const
+{
+	return FiringStatus;
+}
+
+int UTankAimingComponent::GetCountOfAmmo() const
+{
+	return countOfAmmo;
 }
 
 void UTankAimingComponent::moveBarrelToward(FVector AimDirection)
@@ -62,18 +96,23 @@ void UTankAimingComponent::moveBarrelToward(FVector AimDirection)
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = (AimAsRotator - BarrelRotator);
 	Barrel->Elevate(DeltaRotator.Pitch);
-	//Ifs are to solve the problem with rotation
-	if (DeltaRotator.Yaw>=180)
-	{
-		Turret->Rotate(-1);
-	}
-	else if (DeltaRotator.Yaw <= -180)
-	{
-		Turret->Rotate(1);
-	}
-	else
+	//Always yaw the shortest way
+	if (FMath::Abs(DeltaRotator.Yaw) < 180)
 	{
 		Turret->Rotate(DeltaRotator.Yaw);
 	}
+	else //Avoid going the long-way round
+	{
+		Turret->Rotate(-DeltaRotator.Yaw);
+	}
 
+}
+
+bool UTankAimingComponent::IsBarrelMoving()
+{
+	if (!ensure(Barrel))return false;
+	auto BarrelForward=Barrel->GetForwardVector();
+	if (!BarrelForward.Equals(AimDirection,0.01))
+	{return true;}
+	return false;
 }
