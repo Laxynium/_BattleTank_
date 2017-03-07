@@ -4,7 +4,8 @@
 
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
-
+class UStaticMeshComponent;
+class UParticleSystemComponent;
 UCLASS()
 class BATTLETANK_API AProjectile : public AActor
 {
@@ -22,5 +23,19 @@ public:
 	
 	void LaunchProjectitle(float Speed);
 private:
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit);
+
 	UProjectileMovementComponent*movementComponent=nullptr;
+	UPROPERTY(VisibleAnywhere, Category="Components")
+	UStaticMeshComponent*CollisionMesh = nullptr;
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UParticleSystemComponent*LaunchBlast = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UParticleSystemComponent*ImpactBlast = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	URadialForceComponent*radialForce = nullptr;
+
 };
