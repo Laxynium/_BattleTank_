@@ -23,9 +23,11 @@ public:
 	
 	void LaunchProjectitle(float Speed);
 private:
+	void OnTimerExpire();
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit);
-
+	
+private:
 	UProjectileMovementComponent*movementComponent=nullptr;
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	UStaticMeshComponent*CollisionMesh = nullptr;
@@ -36,6 +38,12 @@ private:
 	UParticleSystemComponent*ImpactBlast = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	URadialForceComponent*radialForce = nullptr;
+	URadialForceComponent*ExplosionForce = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category="Setup")
+	float DestroyDelay=10.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	float ProjecttileDamage=20.f;
 
 };

@@ -2,6 +2,7 @@
 #include "BattleTank.h"
 #include "TankAmingComponent.h"
 #include "TankAIController.h"
+#include "Tank.h"
 void ATankAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -18,4 +19,23 @@ void ATankAIController::Tick(float DeltaSeconds)
 		AimingComponent->Fire();
 	}
 		
+}
+
+void ATankAIController::SetPawn(APawn * InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (!InPawn)return;
+	
+	auto PossessedTank = Cast<ATank>(InPawn);
+	if (!ensure(PossessedTank)) { return; }
+
+	PossessedTank->OnTankDeath.AddUniqueDynamic(this, &ATankAIController::onControlledTankDeath);
+	//Sbscribe our local method to the tank's death event
+}
+
+void ATankAIController::onControlledTankDeath()
+{
+	if (!ensure(GetPawn())) { return; }
+	GetPawn()->DetachFromControllerPendingDestroy();
+	UE_LOG(LogTemp, Warning, TEXT("%s is destroyed"), *GetName());
 }

@@ -4,6 +4,8 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 class UTankAimingComponent;
+class ATank;
+class APawn;
 UCLASS()
 class BATTLETANK_API ATankPlayerController : public APlayerController
 {
@@ -12,10 +14,15 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 		void FoundAimingComponent(UTankAimingComponent*AimCompRef);
+
+private:
+	UFUNCTION()
+	void onControlledTankDeath();
 private:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay()override;
 
+	virtual void SetPawn(APawn* InPawn)override;
 	
 	void AimTowardsCrosshair();
 

@@ -14,6 +14,11 @@ protected:
 	UPROPERTY(EditAnywhere,Category="Setup")//Consider EditDefaultsOnly
 	float AcceptanceRadius = 8000;
 private:
+	UFUNCTION()
+	void onControlledTankDeath();
+private:
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void SetPawn(APawn* InPawn)override;
+
 	
 };

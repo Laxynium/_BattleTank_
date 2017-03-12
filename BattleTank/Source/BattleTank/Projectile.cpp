@@ -22,8 +22,8 @@ AProjectile::AProjectile()
 	ImpactBlast->AttachToComponent(RootComponent,FAttachmentTransformRules::KeepRelativeTransform);
 	ImpactBlast->bAutoActivate = false;
 
-	radialForce = CreateDefaultSubobject<URadialForceComponent>(FName("Radial Force"));
-	radialForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("Radial Force"));
+	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -37,8 +37,27 @@ void AProjectile::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor,
 {
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
-	radialForce->FireImpulse();
+	ExplosionForce->FireImpulse();
 
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+
+
+
+	UGameplayStatics::ApplyRadialDamage(
+		this,ProjecttileDamage,GetActorLocation(),
+		ExplosionForce->Radius,UDamageType::StaticClass(),
+		TArray<AActor*>() //damage all actors
+	);
+
+
+	FTimerHandle Timer;
+	GetWorld()->GetTimerManager().SetTimer(Timer, this,&AProjectile::OnTimerExpire, DestroyDelay, false);
+
+}
+void AProjectile::OnTimerExpire()
+{
+	Destroy();
 }
 // Called every frame
 void AProjectile::Tick( float DeltaTime )
